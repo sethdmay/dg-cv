@@ -78,7 +78,7 @@ def select_roi(frame):
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture('resources/slow5.m4v')
+    cap = cv2.VideoCapture('resources/putt69.m4v')
 
     #Grab first frame
     first_frame = initialize_camera(cap)
@@ -102,18 +102,26 @@ if __name__ == '__main__':
             roi = frame[point1[1]:point2[1], point1[0]:point2[0], :]
 
             difference = cv2.absdiff(first_frame_roi, roi)
-            difference = cv2.GaussianBlur(difference, (3, 3), 0)
+            difference = cv2.cvtColor(difference,cv2.COLOR_BGR2GRAY)
+            # difference = cv2.GaussianBlur(difference, (15, 15), 0)
+            median = cv2.medianBlur(difference, 15)
 
-            _, difference = cv2.threshold(difference, 18, 255, cv2.THRESH_BINARY)
+            _, difference = cv2.threshold(difference, 20, 255, cv2.THRESH_BINARY)
 
+            dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
-            #Overlay computed difference image onto the whole image for visualization
-            difference_image_canvas[point1[1]:point2[1], point1[0]:point2[0], :] = difference.copy()
+            image, contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            for c in contours:
+                if cv2.contourArea(c) > 150:  # if contour area is less then 800 non-zero(not-black) pixels(white)
+                    (x, y, w, h) = cv2.boundingRect(c)  # x,y are the top left of the contour and w,h are the width and hieght
 
+                    cv2.rectangle(frame, (x, y), (x+point1[0], y+point1[1]), (255, 0, 0), 2)
 
-            cv2.imshow(FIRST_FRAME_WINDOW_TITLE, first_frame)
+                else:
+                    pass
+
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
-            cv2.imshow(DIFFERENCE_WINDOW_TITLE, difference_image_canvas)
+
 
 
             key = cv2.waitKey(30) & 0xff
