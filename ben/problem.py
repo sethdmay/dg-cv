@@ -6,6 +6,7 @@ ORIGINAL_WINDOW_TITLE = 'Original'
 FIRST_FRAME_WINDOW_TITLE = 'First Frame'
 DIFFERENCE_WINDOW_TITLE = 'Difference'
 
+myPoints = []
 
 canvas = None
 drawing = False # true if mouse is pressed
@@ -88,7 +89,7 @@ old_points = np.array([[]])
 
 def drawOnCanvas(myPoints):
     for point in myPoints:
-        cv2.circle(frame, (x + point1[0] + w, y + point1[1] + h), 10, [255,0,255], cv2.FILLED)
+        cv2.circle(frame, (point[0], point[1]), 10, [255,0,255], cv2.FILLED)
 
 if __name__ == '__main__':
 
@@ -125,7 +126,6 @@ if __name__ == '__main__':
 
             image, contours, hierachy = cv2.findContours(difference.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             x,y,w,h =0,0,0,0
-            myPoints = []
             newPoints=[]
             for c in contours:
                 if cv2.contourArea(c) > 50:  # if contour area is less then 30 non-zero(not-black) pixels(white)
@@ -138,11 +138,10 @@ if __name__ == '__main__':
             #
             #     old_gray = difference.copy()
 
-            if len(newPoints)!=0:
+            if len(newPoints) != 0:
                 for newP in newPoints:
                     myPoints.append(newP)
-            print(myPoints)
-            if len(myPoints)!=0:
+            if len(myPoints) != 0:
                 drawOnCanvas(myPoints)
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
 
@@ -153,3 +152,4 @@ if __name__ == '__main__':
             break
     cap.release()
     cv2.destroyAllWindows()
+
