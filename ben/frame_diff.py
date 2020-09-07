@@ -90,11 +90,7 @@ old_points = np.array([[]])
 
 if __name__ == '__main__':
 
-<<<<<<< HEAD
     cap = cv2.VideoCapture('resources/putt.mov')
-=======
-    cap = cv2.VideoCapture('resources/blu.m4v')
->>>>>>> 2716b06e5e9e45ddf9e54dbd4617d5e801286d54
 
     #Grab first frame
     first_frame = initialize_camera(cap)
