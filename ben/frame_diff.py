@@ -1,4 +1,4 @@
-import numpy as npimport numpy as np
+import numpy as np
 import cv2
 
 
@@ -72,7 +72,20 @@ def select_roi(frame):
 
     return roi_selected, p1, p2
 
+# Mouse function to select point
+def select_point(event, x, y, flags, params):
+    global point, point_selected, old_points
+    if event == cv2.EVENT_LBUTTONDOWN:
+        point = (x, y)
+        point_selected = True
+        old_points = np.array([[x, y]], dtype=np.float32)
 
+cv2.namedWindow('Original')
+cv2.setMouseCallback("Original", select_point)
+
+point_selected = False
+point = ()
+old_points = np.array([[]])
 
 
 if __name__ == '__main__':
@@ -109,21 +122,22 @@ if __name__ == '__main__':
             # dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
             image, contours, hierachy = cv2.findContours(difference.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+            count = 0
             for c in contours:
-                if cv2.contourArea(c) > 50:  # if contour area is less then 800 non-zero(not-black) pixels(white)
+                if cv2.contourArea(c) > 50:  # if contour area is less then 30 non-zero(not-black) pixels(white)
                     (x, y, w, h) = cv2.boundingRect(c)  # x,y are the top left of the contour and w,h are the width and hieght
+                    print(x,y,w,h)
 
                     cv2.rectangle(frame, (x + point1[0], y + point1[1]), (x + point1[0] + w, y + point1[1] + h),(255, 0, 0), 2)
 
+            # mouse selection
 
-                else:
-                    pass
+            if point_selected is True:
+                cv2.circle(frame, point, 5, (0, 0, 255), 2)
 
+                old_gray = difference.copy()
 
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
-
-
 
             key = cv2.waitKey(30) & 0xff
             if key == 27:
