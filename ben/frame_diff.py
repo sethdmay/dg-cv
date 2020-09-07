@@ -52,7 +52,7 @@ def select_roi(frame):
 
         #Press Enter to break the loop
         if key == 13:
-            break;
+            break
 
 
     cv2.destroyWindow(ROI_SELECTION_WINDOW)
@@ -78,7 +78,7 @@ def select_roi(frame):
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture('resources/putt69.m4v')
+    cap = cv2.VideoCapture('resources/putt.mov')
 
     #Grab first frame
     first_frame = initialize_camera(cap)
@@ -110,12 +110,12 @@ if __name__ == '__main__':
 
             dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
-            image, contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for c in contours:
                 if cv2.contourArea(c) > 150:  # if contour area is less then 800 non-zero(not-black) pixels(white)
                     (x, y, w, h) = cv2.boundingRect(c)  # x,y are the top left of the contour and w,h are the width and hieght
 
-                    cv2.rectangle(frame, (x, y), (x+point1[0], y+point1[1]), (255, 0, 0), 2)
+                    cv2.rectangle(frame, (x+point1[0], y+point1[1]), (x+point1[0]+w, y+point1[1]+h), (255, 0, 0), 2)
 
                 else:
                     pass
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
 
 
-            key = cv2.waitKey(30) & 0xff
+            key = cv2.waitKey(2) & 0xff
             if key == 27:
                 break
         else:
