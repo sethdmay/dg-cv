@@ -51,7 +51,7 @@ def select_roi(frame):
 
         #Press Enter to break the loop
         if key == 13:
-            break
+            break;
 
 
     cv2.destroyWindow(ROI_SELECTION_WINDOW)
@@ -74,11 +74,10 @@ def select_roi(frame):
 
 # Mouse function to select point
 def select_point(event, x, y, flags, params):
-    global point, point_selected, old_points
+    global point, point_selected
     if event == cv2.EVENT_LBUTTONDOWN:
         point = (x, y)
         point_selected = True
-        old_points = np.array([[x, y]], dtype=np.float32)
 
 cv2.namedWindow('Original')
 cv2.setMouseCallback("Original", select_point)
@@ -87,14 +86,13 @@ point_selected = False
 point = ()
 old_points = np.array([[]])
 
+def drawOnCanvas(myPoints):
+    for point in myPoints:
+        cv2.circle(frame, (x + point1[0] + w, y + point1[1] + h), 10, [255,0,255], cv2.FILLED)
 
 if __name__ == '__main__':
 
-<<<<<<< HEAD
-    cap = cv2.VideoCapture('resources/putt.mov')
-=======
     cap = cv2.VideoCapture('resources/blu.m4v')
->>>>>>> 2716b06e5e9e45ddf9e54dbd4617d5e801286d54
 
     #Grab first frame
     first_frame = initialize_camera(cap)
@@ -125,28 +123,33 @@ if __name__ == '__main__':
 
             # dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
-            contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            image, contours, hierachy = cv2.findContours(difference.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            x,y,w,h =0,0,0,0
+            myPoints = []
+            newPoints=[]
             for c in contours:
                 if cv2.contourArea(c) > 50:  # if contour area is less then 30 non-zero(not-black) pixels(white)
                     (x, y, w, h) = cv2.boundingRect(c)  # x,y are the top left of the contour and w,h are the width and hieght
-                    print(x,y,w,h)
-
                     cv2.rectangle(frame, (x + point1[0], y + point1[1]), (x + point1[0] + w, y + point1[1] + h),(255, 0, 0), 2)
-
+                    newPoints.append([x,y])
             # mouse selection
+            # if point_selected is True:
+            #     cv2.circle(frame, point, 5, (0, 0, 255), 2)
+            #
+            #     old_gray = difference.copy()
 
-            if point_selected is True:
-                cv2.circle(frame, point, 5, (0, 0, 255), 2)
-
-                old_gray = difference.copy()
-
+            if len(newPoints)!=0:
+                for newP in newPoints:
+                    myPoints.append(newP)
+            print(myPoints)
+            if len(myPoints)!=0:
+                drawOnCanvas(myPoints)
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
 
-            key = cv2.waitKey(2) & 0xff
+            key = cv2.waitKey(50) & 0xff
             if key == 27:
                 break
         else:
             break
-
     cap.release()
     cv2.destroyAllWindows()
