@@ -92,7 +92,7 @@ def drawOnCanvas(myPoints):
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture('resources/blu.m4v')
+    cap = cv2.VideoCapture('resources/putt.mov')
 
     #Grab first frame
     first_frame = initialize_camera(cap)
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
             # dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
-            image, contours, hierachy = cv2.findContours(difference.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             x,y,w,h =0,0,0,0
             myPoints = []
             newPoints=[]
@@ -141,7 +141,7 @@ if __name__ == '__main__':
             if len(newPoints)!=0:
                 for newP in newPoints:
                     myPoints.append(newP)
-            print(myPoints)
+          #print(myPoints)
             if len(myPoints)!=0:
                 drawOnCanvas(myPoints)
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
