@@ -7,6 +7,8 @@ FIRST_FRAME_WINDOW_TITLE = 'First Frame'
 DIFFERENCE_WINDOW_TITLE = 'Difference'
 
 myPoints = []
+global color_cycle
+color_cycle = 0
 
 canvas = None
 drawing = False # true if mouse is pressed
@@ -52,7 +54,7 @@ def select_roi(frame):
 
         #Press Enter to break the loop
         if key == 13:
-            break;
+            break
 
 
     cv2.destroyWindow(ROI_SELECTION_WINDOW)
@@ -87,9 +89,16 @@ point_selected = False
 point = ()
 old_points = np.array([[]])
 
+
+def get_color(frame):
+    a_frame = frame % 2560
+    a_frame = a_frame // 10
+    return [a_frame, 0 , 0 ]
+
+
 def drawOnCanvas(myPoints):
     for point in myPoints:
-        cv2.circle(frame, (point[0], point[1]), 10, [255,0,255], cv2.FILLED)
+        cv2.circle(frame, (point[0], point[1]), 4, get_color(color_cycle), cv2.FILLED)
 
 if __name__ == '__main__':
 
@@ -109,12 +118,16 @@ if __name__ == '__main__':
 
     while cap.isOpened():
 
+
+        color_cycle += 5
+
         ret, frame = cap.read()
 
         if ret:
 
             #ROI of current frame
-            roi = frame[point1[1]:point2[1], point1[0]:point2[0], :]
+            roi = frame[point1[1]:point2[1], point1[0]:point2[0], :]    
+            
             #frame diff with smoothing
             difference = cv2.absdiff(first_frame_roi, roi)
             difference = cv2.cvtColor(difference,cv2.COLOR_BGR2GRAY)
@@ -122,16 +135,16 @@ if __name__ == '__main__':
 
             _, difference = cv2.threshold(difference, 20, 255, cv2.THRESH_BINARY)
 
-            # dilate_image = cv2.erode(difference, None, iterations=1) #ben
+            dilate_image = cv2.erode(difference, None, iterations=1) #ben
 
-            contours, hierachy = cv2.findContours(dilate_image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours, hierachy = cv2.findContours(difference.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             x,y,w,h =0,0,0,0
             newPoints=[]
             for c in contours:
-                if cv2.contourArea(c) > 50:  # if contour area is less then 30 non-zero(not-black) pixels(white)
+                if cv2.contourArea(c) > 120:  # if contour area is less then 30 non-zero(not-black) pixels(white)
                     (x, y, w, h) = cv2.boundingRect(c)  # x,y are the top left of the contour and w,h are the width and hieght
                     cv2.rectangle(frame, (x + point1[0], y + point1[1]), (x + point1[0] + w, y + point1[1] + h),(255, 0, 0), 2)
-                    newPoints.append([x,y])
+                    newPoints.append([x + point1[0],y + point1[1]])
             # mouse selection
             # if point_selected is True:
             #     cv2.circle(frame, point, 5, (0, 0, 255), 2)
@@ -145,7 +158,7 @@ if __name__ == '__main__':
                 drawOnCanvas(myPoints)
             cv2.imshow(ORIGINAL_WINDOW_TITLE, frame)
 
-            key = cv2.waitKey(50) & 0xff
+            key = cv2.waitKey(1) & 0xff
             if key == 27:
                 break
         else:
