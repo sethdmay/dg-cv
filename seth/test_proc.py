@@ -149,7 +149,8 @@ def _DP_Wrap(val):
 image = cv.imread("pink_putt.jpg")
 
 def main():
-    image = cv.imread("pink_putt.jpg")
+
+
     (h,w,d) = image.shape
     print(f"H: {h}, W:{w}, D:{d}")
 
@@ -177,3 +178,5 @@ def main():
 
     # Wait until user finishes program
     cv.waitKey()
+
+

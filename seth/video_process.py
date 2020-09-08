@@ -29,8 +29,8 @@ while frame_available:
     edged1 = test_proc.ProcessCannyThreshold(frame, threshold=100, kernel_size=4, ratio=1.5)
     mask_and_shade1 = test_proc.mask_highlight(edged1, frame)
 
-    edged2 = test_proc.ProcessCannyThreshold(frame, threshold=90, kernel_size=4, ratio=1.5)
-    mask_and_shade2 = test_proc.mask_highlight(edged2, frame)
+    #edged2 = test_proc.ProcessCannyThreshold(frame, threshold=90, kernel_size=4, ratio=1.5)
+    #mask_and_shade2 = test_proc.mask_highlight(edged2, frame)
 
     #grey_original = cv.cvtColor(cv.cvtColor(frame, cv.COLOR_BGR2GRAY), cv.COLOR_GRAY2BGR)
     #grey_original //=2
@@ -39,8 +39,8 @@ while frame_available:
     #summed = np.min(np.stack(summed,255], 255)
 
     cv.imshow(wn1, mask_and_shade1)
-    cv.imshow(wn2, mask_and_shade2)
-    cv.waitKey(3)
+    #cv.imshow(wn2, mask_and_shade2)
+    cv.waitKey(2)
 
 
 
