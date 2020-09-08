@@ -108,7 +108,12 @@ while available:
     cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
     key = cv.waitKey(2)
-
+    
+    if key == ord('q'):
+        break
+    if key == ord('p'):
+        cv.waitKey(-1)
+        
     while True:
         if paused:
             key = cv.waitKey(100)
