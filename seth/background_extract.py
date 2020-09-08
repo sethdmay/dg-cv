@@ -6,7 +6,9 @@ window_name = "FG Mask"
 paused = False
 
 video = cv.VideoCapture('resources/drive-br.mov')
-bg_extract = cv.createBackgroundSubtractorKNN()
+bg_extract = cv.createBackgroundSubtractorKNN(history=750, dist2Threshold=800)
+bg_extract.setNSamples(10)
+
 
 available, frame = video.read()
 
@@ -37,7 +39,7 @@ while available:
             if key == 27:
                 break
     else:
-        key = cv.waitKey(5)
+        key = cv.waitKey(2)
 
     if key == 27:
         break
