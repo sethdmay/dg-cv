@@ -13,7 +13,7 @@ lk_params = dict(
 )
 
 
-video = cv.VideoCapture("resources/drive-br.mov")
+video = cv.VideoCapture("resources/drive-lawn-slow.mov")
 bg_extract = cv.createBackgroundSubtractorKNN(history=750, dist2Threshold=800)
 bg_extract.setNSamples(10)
 
@@ -68,11 +68,11 @@ def mask_highlight(mask, original):
 
 
 def get_gradient(fnum, current_length):
-    first = np.interp(fnum, [0,current_length], [110,230])
-    second = np.interp(fnum, [0,current_length], [230,110])
+    first = np.interp(fnum, [0,current_length], [230,210])
+    second = np.interp(fnum, [0,current_length], [230,50])
 
 
-    return [int(first), int(second), 0]
+    return [0, int(second), int(first)]
 
 
 cv.setMouseCallback(window_name, select_point)
@@ -82,10 +82,10 @@ while available:
 
     fg_highlight, fg_alone = mask_highlight(fg_mask, frame)
 
-    gray_frame = cv.cvtColor(fg_highlight, cv.COLOR_BGR2GRAY)
+    gray_frame = cv.cvtColor(fg_alone, cv.COLOR_BGR2GRAY)
 
     if point_selected:
-        cv.circle(fg_highlight, point, 5, (0, 0, 255), 2)
+        cv.circle(fg_alone, point, 5, (0, 0, 255), 2)
 
         new_points, status, error = cv.calcOpticalFlowPyrLK(
             old_gray, gray_frame, old_points, None, **lk_params
@@ -94,7 +94,7 @@ while available:
         old_points = new_points
 
         x, y = new_points.ravel()
-        cv.circle(fg_highlight, (x, y), 5, (0, 255, 0), -1)
+        cv.circle(fg_alone, (x, y), 5, (0, 255, 0), -1)
 
         path.append((int(x), int(y)))
 
@@ -105,7 +105,7 @@ while available:
     for i, location in enumerate(path):
         cv.circle(frame, location, 3, get_gradient(i, current_length), cv.FILLED)
 
-    cv.imshow(window_name, fg_highlight)
+    cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
     key = cv.waitKey(2)
 
