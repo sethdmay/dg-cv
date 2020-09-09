@@ -97,6 +97,8 @@ while available:
         cv.circle(fg_alone, (x, y), 5, (0, 255, 0), -1)
 
         path.append((int(x), int(y)))
+        if key == ord('q'):
+            point_selected = False
 
     old_gray = gray_frame.copy()
 
@@ -107,7 +109,7 @@ while available:
 
     cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
-    key = cv.waitKey(2)
+    key = cv.waitKey(1)
     
     if key == ord('q'):
         break
