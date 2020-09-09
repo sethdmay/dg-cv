@@ -68,11 +68,12 @@ def mask_highlight(mask, original):
 
 
 def get_gradient(fnum, current_length):
-    first = np.interp(fnum, [0,current_length], [230,210])
-    second = np.interp(fnum, [0,current_length], [230,50])
+    red = np.interp(fnum, [0,current_length], [0,176])
+    green = np.interp(fnum, [0,current_length], [0,163])
+    blue = np.interp(fnum, [0,current_length], [0,105])
 
 
-    return [0, int(second), int(first)]
+    return [int(blue), int(green), int(red)]
 
 
 cv.setMouseCallback("Original", select_point)
@@ -102,10 +103,16 @@ while available:
 
     old_gray = gray_frame.copy()
 
+    path_canvas = np.zeros_like(frame)
+
     # draw gradient
     current_length = len(path)
     for i, location in enumerate(path[:-1]):
-        cv.line(frame, location, path[i+1], get_gradient(i, current_length), 2, cv.FILLED)
+        cv.line(path_canvas, location, path[i+1], get_gradient(i, current_length), 3, cv.FILLED)
+
+    path_canvas = cv.GaussianBlur(path_canvas, (3,3), 0)
+
+    frame[path_canvas != [0,0,0]] = path_canvas[path_canvas != [0,0,0]]
 
     cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
