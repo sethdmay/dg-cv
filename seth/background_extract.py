@@ -68,9 +68,9 @@ def mask_highlight(mask, original):
 
 
 def get_gradient(fnum, current_length):
-    red = np.interp(fnum, [0,current_length], [0,176])
-    green = np.interp(fnum, [0,current_length], [0,163])
-    blue = np.interp(fnum, [0,current_length], [0,105])
+    red = np.interp(fnum, [0,current_length], [64,0])
+    green = np.interp(fnum, [0,current_length], [255,128])
+    blue = np.interp(fnum, [0,current_length], [0,255])
 
 
     return [int(blue), int(green), int(red)]
@@ -98,21 +98,28 @@ while available:
         cv.circle(fg_alone, (x, y), 5, (0, 255, 0), -1)
 
         path.append((int(x), int(y)))
-        if key == ord('q'):
+        if key == ord('r'):
             point_selected = False
 
     old_gray = gray_frame.copy()
 
-    path_canvas = np.zeros_like(frame)
 
-    # draw gradient
-    current_length = len(path)
-    for i, location in enumerate(path[:-1]):
-        cv.line(path_canvas, location, path[i+1], get_gradient(i, current_length), 3, cv.FILLED)
 
-    path_canvas = cv.GaussianBlur(path_canvas, (3,3), 0)
+    
 
-    frame[path_canvas != [0,0,0]] = path_canvas[path_canvas != [0,0,0]]
+    if len(path) >= 2:
+        path_canvas = np.zeros_like(frame)
+
+        # draw gradient
+        current_length = len(path)
+        for i, location in enumerate(path[:-1]):
+            cv.line(path_canvas, location, path[i+1], get_gradient(i, current_length), 3, cv.FILLED)
+
+
+        path_canvas = cv.GaussianBlur(path_canvas, (3,3), 0)
+
+        frame = cv.add(path_canvas, frame)
+
 
     cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
