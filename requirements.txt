@@ -1,0 +1,3 @@
+# packages needed for this repo (currently)
+numpy
+opencv-contrib-python
