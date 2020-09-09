@@ -116,20 +116,6 @@ while available:
     if key == ord('p'):
         cv.waitKey(-1)
         
-    while True:
-        if paused:
-            key = cv.waitKey(100)
-            if key == 112:
-                paused = False
-                break
-            if key == 27:
-                break
-        else:
-            key = cv.waitKey(2)
-            break
-
-    if key == 27:
-        break
 
     frame_num += 1
     available, frame = video.read()
