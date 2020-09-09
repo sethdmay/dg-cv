@@ -55,7 +55,7 @@ def mask_highlight(mask, original):
     pure_mask = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
     pure_mask = pure_mask == 255
 
-    grey_original = cv.cvtColor(q
+    grey_original = cv.cvtColor(
         cv.cvtColor(original, cv.COLOR_BGR2GRAY), cv.COLOR_GRAY2BGR
     )
     grey_original //= 10
