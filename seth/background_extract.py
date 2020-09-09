@@ -116,9 +116,12 @@ while available:
             cv.line(path_canvas, location, path[i+1], get_gradient(i, current_length), 3, cv.FILLED)
 
 
-        path_canvas = cv.GaussianBlur(path_canvas, (3,3), 0)
+        path_canvas_blurred = cv.blur(path_canvas, (2,2), 0)
 
-        frame = cv.add(path_canvas, frame)
+
+        frame = cv.addWeighted(src1=path_canvas_blurred, alpha=0.8, src2=frame, beta=1, gamma=0)
+
+        #frame[path_canvas != [0,0,0]] = path_canvas[path_canvas != [0,0,0]]
 
 
     cv.imshow(window_name, fg_alone)
