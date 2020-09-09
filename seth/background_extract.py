@@ -13,7 +13,7 @@ lk_params = dict(
 )
 
 
-video = cv.VideoCapture("resources/drive-lawn-slow.mov")
+video = cv.VideoCapture("resources/putt.mov")
 bg_extract = cv.createBackgroundSubtractorKNN(history=750, dist2Threshold=800)
 bg_extract.setNSamples(10)
 
@@ -55,7 +55,7 @@ def mask_highlight(mask, original):
     pure_mask = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
     pure_mask = pure_mask == 255
 
-    grey_original = cv.cvtColor(
+    grey_original = cv.cvtColor(q
         cv.cvtColor(original, cv.COLOR_BGR2GRAY), cv.COLOR_GRAY2BGR
     )
     grey_original //= 10
@@ -75,7 +75,7 @@ def get_gradient(fnum, current_length):
     return [0, int(second), int(first)]
 
 
-cv.setMouseCallback(window_name, select_point)
+cv.setMouseCallback("Original", select_point)
 
 while available:
     fg_mask = bg_extract.apply(frame)
@@ -104,8 +104,8 @@ while available:
 
     # draw gradient
     current_length = len(path)
-    for i, location in enumerate(path):
-        cv.circle(frame, location, 3, get_gradient(i, current_length), cv.FILLED)
+    for i, location in enumerate(path[:-1]):
+        cv.line(frame, location, path[i+1], get_gradient(i, current_length), 2, cv.FILLED)
 
     cv.imshow(window_name, fg_alone)
     cv.imshow("Original", frame)
